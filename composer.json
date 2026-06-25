@@ -1,0 +1,18 @@
+{
+    "name": "padosoft/laravel-iam-ai",
+    "description": "Modulo opzionale AI di Laravel IAM: governance su laravel/ai + padosoft/laravel-ai-regolo (sovrano UE) / Ollama. Advisory-only.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "padosoft/laravel-iam-contracts": "*",
+        "padosoft/laravel-iam-server": "*",
+        "spatie/laravel-package-tools": "^1.16",
+        "laravel/ai": "*",
+        "padosoft/laravel-ai-regolo": "*"
+    },
+    "autoload": { "psr-4": { "Padosoft\\Iam\\Ai\\": "src/" } },
+    "extra": { "branch-alias": { "dev-main": "0.1-dev" } },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
