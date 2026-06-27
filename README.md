@@ -1,8 +1,155 @@
-# padosoft/laravel-iam-ai
+<p align="center">
+  <img src="art/banner.png" alt="Laravel IAM" width="100%">
+</p>
 
-Parte di **Laravel IAM** — Identity & Authorization Control Plane.
-Specifiche di design: vedi `laravel-iam-docs/` (doc 00-17).
+<h1 align="center">Laravel IAM — AI</h1>
 
-Modulo opzionale AI: governance su laravel/ai + laravel-ai-regolo (Spatie migration assistant, policy copilot).
+<p align="center">
+  <strong>AI that <em>assists</em> your access governance — and never holds the decision.</strong><br>
+  Advisory-only redaction, hallucination-guard and audit, on a sovereign EU / on-prem transport. Off by default.
+</p>
 
-**Status:** scaffold M0 (Draft v1). Licenza: MIT.
+<p align="center">
+  <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/v/padosoft/laravel-iam-ai.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+  <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/dt/padosoft/laravel-iam-ai.svg?style=flat-square" alt="Total Downloads"></a>
+  <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/php-v/padosoft/laravel-iam-ai.svg?style=flat-square" alt="PHP Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
+</p>
+
+---
+
+> [!WARNING]
+> **Advisory only.** This module never grants or denies access. It produces *explanations* and *drafts*
+> that a human reviews and that the deterministic **PDP** (in `laravel-iam-server`) still adjudicates.
+> The AI decorates evidence — it never replaces it, and it never decides.
+
+## Why this package
+
+Bolting an LLM onto an IAM system is tempting and dangerous: models hallucinate identifiers, leak secrets
+into prompts, and — worst of all — get trusted to *make the call*. `laravel-iam-ai` gives you the useful
+half (natural-language explanations, least-privilege suggestions, access-review summaries) while making
+the dangerous half **structurally impossible**:
+
+- **The PDP, not the AI, decides.** Every AI output is an `Advisory` — a proposal, flagged `advisory_only`.
+- **Nothing leaks.** A mandatory redaction pipeline strips tokens, keys, passwords, OTPs, emails and IPs
+  *before* any prompt leaves the process — and again on the model's output (defense-in-depth).
+- **No invented evidence.** A hallucination-guard rejects any answer that cites an ID not present in the
+  real evidence; the response falls back to deterministic text.
+- **Sovereign by default, off by default.** Out of the box `enabled=false` and the transport is
+  `disabled` — no data leaves your perimeter. When you turn it on, the recommended providers are
+  **Regolo (EU)** or **Ollama (on-prem)**. **OpenAI is never a default.**
+
+"Deterministic first, AI second": if the AI is off, the transport fails, or the guard rejects the output,
+you always get the deterministic answer built from your tools.
+
+## Features
+
+- **`AdvisoryClient`** — the governance orchestrator: `redaction (pre) → transport → hallucination-guard
+  (post) → audit`, with a deterministic fallback on every failure path.
+- **`Redactor`** — mandatory PII/secret redaction (Bearer/JWT/PEM keys, `password|secret|token|otp|cookie`,
+  email, IPv4, long hex & base64 blobs). Fail-safe: when in doubt, redact.
+- **`HallucinationGuard`** — the output may cite only identifiers found in the evidence (prefixed IDs,
+  ULIDs, UUIDs). Anything invented is a violation.
+- **`AccessExplainer`** — a Policy Copilot that rephrases the PDP's `explanation[]` in plain language,
+  citing only real `decision_id` / grants. Fail-closed: only a true boolean `allowed` reads as *allowed*.
+- **`DisabledProvider`** — the safe default transport: makes no network calls; the client falls back to
+  deterministic text.
+- **Tamper-evident audit** of every AI action (`stream=ai`), with `store_prompts=false` by default.
+
+## Use cases
+
+- **"Why was I denied?"** Turn a terse PDP `explanation[]` into a clear sentence for a support agent or
+  end user — without ever claiming the decision *should* have been different.
+- **Draft a least-privilege role.** Let the AI propose a tightened role from observed usage; a human
+  approves it and the PDP enforces it.
+- **Summarize an access review.** Condense a campaign's signals into a digest for the reviewer — advisory,
+  fully audited, with no secrets in the trail.
+
+## Installation
+
+```bash
+composer require padosoft/laravel-iam-ai
+```
+
+**Requirements:** PHP **8.3+**, Laravel, and `padosoft/laravel-iam-server` (provides the audit recorder).
+
+> [!NOTE]
+> **Safe by default.** After install the module is **disabled** (`enabled=false`) and the transport is
+> `disabled` — it does nothing until you opt in and pick a sovereign provider. No OpenAI dependency is
+> ever pulled in; real providers (Regolo/Ollama) are optional adapters you add explicitly.
+
+## Quick start
+
+### 1. Publish the config
+
+```bash
+php artisan vendor:publish --tag=laravel-iam-ai-config
+```
+
+### 2. Explain a decision (works even with the AI off)
+
+`AccessExplainer` takes the PDP decision array and returns an `Advisory`:
+
+```php
+use Padosoft\Iam\Ai\Modules\AccessExplainer;
+
+$decision = $pdp->check($query)->toArray(); // from laravel-iam-server
+
+$advisory = app(AccessExplainer::class)->explain($decision, 'Why was this denied?');
+
+$advisory->text;          // human-readable explanation (deterministic if AI is off)
+$advisory->citations;     // only real refs: ['dec_01H…', 'orders:refund']
+$advisory->aiUsed;        // false until you enable a provider
+$advisory->toArray();     // includes 'advisory_only' => true
+```
+
+### 3. Turn on a sovereign provider (opt-in)
+
+In `.env` — never wire OpenAI as a default:
+
+```dotenv
+IAM_AI_ENABLED=true
+IAM_AI_PROVIDER=regolo        # sovereign EU — or 'ollama' for on-prem
+IAM_AI_MODEL=your-model
+```
+
+Install the matching adapter (e.g. `padosoft/laravel-ai-regolo`); it rebinds the `AiProvider` transport.
+Redaction stays on, the guard stays on, and every call is audited.
+
+### 4. The PDP still decides
+
+The AI never gates anything. Authorization stays exactly where it was:
+
+```php
+if ($pdp->check($query)->allowed) {
+    // ... the PDP allowed it — the Advisory only explained it
+}
+```
+
+## Ecosystem
+
+| Package | Role |
+| --- | --- |
+| [laravel-iam-contracts](https://github.com/padosoft/laravel-iam-contracts) | Shared interfaces & DTOs — the dependency root |
+| [laravel-iam-server](https://github.com/padosoft/laravel-iam-server) | The IAM server: identity, PDP, OAuth/OIDC, audit, governance, Admin API & panel |
+| [laravel-iam-client](https://github.com/padosoft/laravel-iam-client) | Client for apps consuming Laravel IAM: OIDC login, JWT/JWKS, middleware, Gate adapter |
+| **laravel-iam-ai** *(this repo)* | Optional AI module: advisory-only governance (redaction + hallucination guard + audit) |
+| [laravel-iam-directory](https://github.com/padosoft/laravel-iam-directory) | Optional directory module: LDAP / Active Directory (LdapRecord); SCIM in v2 |
+| [laravel-iam-bridge-spatie-permission](https://github.com/padosoft/laravel-iam-bridge-spatie-permission) | Migration bridge from spatie/laravel-permission: scan, shadow mode, cutover |
+
+## Documentation
+
+A docmd doc-site lives in [`docs/`](docs/): start at [`docs/index.md`](docs/index.md), then
+[Getting started](docs/getting-started.md), [Concepts](docs/concepts.md),
+[Configuration](docs/configuration.md) and the [Reference](docs/reference.md).
+
+## Security
+
+This module is **fail-closed and privacy-first by design**: redaction is mandatory and runs before *and*
+after the model, prompts are never stored, the hallucination-guard rejects unsupported claims, and the
+default transport makes no network calls. The AI is advisory-only — it can never escalate access. If you
+discover a security issue, please email **security@padosoft.com** rather than opening a public issue.
+
+## License
+
+MIT © [Padosoft](https://www.padosoft.com). See [LICENSE](LICENSE).

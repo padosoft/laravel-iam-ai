@@ -1,0 +1,36 @@
+{
+  "title": "Laravel IAM — AI",
+  "description": "Optional AI module for Laravel IAM: advisory-only governance (redaction + hallucination-guard + audit) on a sovereign transport. Off by default.",
+  "url": "https://padosoft.github.io/laravel-iam-ai",
+  "src": "docs",
+  "out": "site",
+  "base": "/",
+  "layout": {
+    "spa": true,
+    "header": { "enabled": true },
+    "sidebar": { "enabled": true, "collapsible": true, "position": "left" },
+    "footer": { "style": "minimal", "content": "MIT © Padosoft — part of the Laravel IAM ecosystem", "branding": true }
+  },
+  "optionsMenu": {
+    "position": "header",
+    "components": { "search": true, "themeSwitch": true }
+  },
+  "theme": {
+    "name": "default",
+    "appearance": "dark",
+    "customCss": []
+  },
+  "navigation": [
+    { "text": "Home", "url": "/" },
+    { "text": "Getting started", "url": "/getting-started" },
+    { "text": "Concepts", "url": "/concepts" },
+    { "text": "Configuration", "url": "/configuration" },
+    { "text": "Reference", "url": "/reference" }
+  ],
+  "plugins": {
+    "search": {},
+    "seo": { "titleTemplate": "%s | Laravel IAM AI" },
+    "sitemap": { "url": "https://padosoft.github.io/laravel-iam-ai" },
+    "git": { "repo": "https://github.com/padosoft/laravel-iam-ai", "branch": "main", "editLink": true, "lastUpdated": true }
+  }
+}
