@@ -5,16 +5,29 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "padosoft/laravel-iam-contracts": "*",
-        "padosoft/laravel-iam-server": "*",
+        "padosoft/laravel-iam-contracts": "^1.0",
+        "padosoft/laravel-iam-server": "^1.0",
         "spatie/laravel-package-tools": "^1.16"
     },
     "suggest": {
         "laravel/ai": "Astrazione transport multi-provider per i provider AI reali",
         "padosoft/laravel-ai-regolo": "Provider sovrano italiano/UE (default consigliato)"
     },
-    "autoload": { "psr-4": { "Padosoft\\Iam\\Ai\\": "src/" } },
-    "extra": { "branch-alias": { "dev-main": "0.1-dev" } },
+    "autoload": {
+        "psr-4": {
+            "Padosoft\\Iam\\Ai\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Padosoft\\Iam\\Ai\\IamAiServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
