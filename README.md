@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/padosoft/laravel-iam-ai/actions/workflows/tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/padosoft/laravel-iam-ai/tests.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
   <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/v/padosoft/laravel-iam-ai.svg?style=flat-square" alt="Latest Version on Packagist"></a>
   <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/dt/padosoft/laravel-iam-ai.svg?style=flat-square" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/padosoft/laravel-iam-ai"><img src="https://img.shields.io/packagist/php-v/padosoft/laravel-iam-ai.svg?style=flat-square" alt="PHP Version"></a>
