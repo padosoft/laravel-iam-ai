@@ -17,6 +17,13 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
 </p>
 
+<p align="center">
+  <strong><a href="https://doc.laravel-iam-ai.padosoft.com">📚 Documentation</a></strong> ·
+  <a href="https://doc.laravel-iam-ai.padosoft.com/quickstart">Quickstart</a> ·
+  <a href="https://doc.laravel-iam-ai.padosoft.com/concepts/advisory-only">Advisory-only</a> ·
+  <a href="https://packagist.org/packages/padosoft/laravel-iam-ai">Packagist</a>
+</p>
+
 ---
 
 > [!WARNING]
@@ -140,9 +147,22 @@ if ($pdp->check($query)->allowed) {
 
 ## Documentation
 
-A docmd doc-site lives in [`docs/`](docs/): start at [`docs/index.md`](docs/index.md), then
-[Getting started](docs/getting-started.md), [Concepts](docs/concepts.md),
-[Configuration](docs/configuration.md) and the [Reference](docs/reference.md).
+Full documentation lives at **[doc.laravel-iam-ai.padosoft.com](https://doc.laravel-iam-ai.padosoft.com)** —
+a docmd doc-site (source in [`docs-site/`](docs-site/)) with theory, mermaid diagrams, ADRs and a complete PHP
+API reference. Good entry points:
+
+- [Quickstart](https://doc.laravel-iam-ai.padosoft.com/quickstart) and
+  [Core concepts](https://doc.laravel-iam-ai.padosoft.com/core-concepts)
+- Concepts & theory: [Advisory-only](https://doc.laravel-iam-ai.padosoft.com/concepts/advisory-only),
+  [Sovereign by default](https://doc.laravel-iam-ai.padosoft.com/concepts/sovereign-by-default),
+  [PRE-prompt redaction](https://doc.laravel-iam-ai.padosoft.com/concepts/redaction),
+  [The hallucination guard](https://doc.laravel-iam-ai.padosoft.com/concepts/hallucination-guard)
+- Architecture: [the advisory pipeline](https://doc.laravel-iam-ai.padosoft.com/architecture/advisory-pipeline)
+  and [ADRs](https://doc.laravel-iam-ai.padosoft.com/architecture/decisions)
+- Reference: [PHP API](https://doc.laravel-iam-ai.padosoft.com/reference/php-api) and the
+  [Advisory contract](https://doc.laravel-iam-ai.padosoft.com/reference/advisory-contract)
+
+A lightweight in-repo copy also lives in [`docs/`](docs/) ([index](docs/index.md)).
 
 ## Security
 

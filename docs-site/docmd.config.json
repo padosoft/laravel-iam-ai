@@ -1,0 +1,160 @@
+{
+  "title": "laravel-iam-ai",
+  "description": "Optional AI module for Laravel IAM: advisory-only governance (PRE-prompt redaction + hallucination-guard + audit) on a sovereign transport. Off by default; the PDP always decides.",
+  "url": "https://doc.laravel-iam-ai.padosoft.com",
+  "src": "docs",
+  "out": "_site",
+  "base": "/",
+
+  "favicon": "assets/favicon.svg",
+  "theme": {
+    "name": "default",
+    "defaultMode": "dark",
+    "customCss": ["assets/custom.css"]
+  },
+
+  "autoTitleFromH1": true,
+  "copyCode": true,
+  "pageNavigation": true,
+  "minify": true,
+  "markdown": { "breaks": true },
+
+  "layout": {
+    "spa": true,
+    "header": { "enabled": true },
+    "sidebar": { "collapsible": true, "defaultCollapsed": false },
+    "optionsMenu": {
+      "position": "header",
+      "components": { "search": true, "themeSwitch": true }
+    }
+  },
+
+  "navigation": [
+    {
+      "title": "Get Started",
+      "icon": "rocket",
+      "children": [
+        { "title": "Introduction", "path": "/" },
+        { "title": "Quickstart", "path": "/quickstart" },
+        { "title": "Installation", "path": "/installation" },
+        { "title": "Core concepts", "path": "/core-concepts" }
+      ]
+    },
+    {
+      "title": "Guides",
+      "icon": "book-open",
+      "children": [
+        { "title": "Explain a denial", "path": "/guides/explain-a-denial" },
+        { "title": "Draft a least-privilege role", "path": "/guides/draft-least-privilege-role" },
+        { "title": "Summarize an access review", "path": "/guides/summarize-access-review" },
+        { "title": "Write a sovereign provider", "path": "/guides/write-a-provider-adapter" }
+      ]
+    },
+    {
+      "title": "Concepts & Theory",
+      "icon": "square-function",
+      "children": [
+        { "title": "Advisory-only authorization", "path": "/concepts/advisory-only" },
+        { "title": "Sovereign by default", "path": "/concepts/sovereign-by-default" },
+        { "title": "PRE-prompt redaction", "path": "/concepts/redaction" },
+        { "title": "The hallucination guard", "path": "/concepts/hallucination-guard" },
+        { "title": "Audit & privacy", "path": "/concepts/audit-and-privacy" }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "icon": "workflow",
+      "children": [
+        { "title": "Architecture overview", "path": "/architecture/overview" },
+        { "title": "The advisory pipeline", "path": "/architecture/advisory-pipeline" },
+        { "title": "Fail-safe & fallback", "path": "/architecture/fail-safe-and-fallback" },
+        { "title": "Architecture decisions (ADR)", "path": "/architecture/decisions" }
+      ]
+    },
+    {
+      "title": "Best Practices",
+      "icon": "lightbulb",
+      "children": [
+        { "title": "Keep the AI out of the decision", "path": "/best-practices/keep-ai-out-of-decisions" },
+        { "title": "Provider sovereignty & residency", "path": "/best-practices/provider-sovereignty" },
+        { "title": "Tuning redaction", "path": "/best-practices/redaction-tuning" }
+      ]
+    },
+    {
+      "title": "Operations",
+      "icon": "settings",
+      "children": [
+        { "title": "Configuration", "path": "/operations/configuration" },
+        { "title": "Observability & audit", "path": "/operations/observability" }
+      ]
+    },
+    {
+      "title": "Reference",
+      "icon": "book-marked",
+      "children": [
+        { "title": "PHP API", "path": "/reference/php-api" },
+        { "title": "Advisory contract", "path": "/reference/advisory-contract" }
+      ]
+    },
+    {
+      "title": "Links",
+      "children": [
+        { "title": "GitHub", "path": "https://github.com/padosoft/laravel-iam-ai", "external": true },
+        { "title": "Packagist", "path": "https://packagist.org/packages/padosoft/laravel-iam-ai", "external": true }
+      ]
+    }
+  ],
+
+  "footer": {
+    "style": "minimal",
+    "branding": true,
+    "content": "© Lorenzo Padovani — [Padosoft](https://github.com/padosoft) · [GitHub](https://github.com/padosoft/laravel-iam-ai) · MIT",
+    "columns": [
+      {
+        "title": "Project",
+        "links": [
+          { "title": "GitHub", "path": "https://github.com/padosoft/laravel-iam-ai", "external": true },
+          { "title": "Packagist", "path": "https://packagist.org/packages/padosoft/laravel-iam-ai", "external": true }
+        ]
+      },
+      {
+        "title": "Ecosystem",
+        "links": [
+          { "title": "laravel-iam-server", "path": "https://doc.laravel-iam-server.padosoft.com", "external": true },
+          { "title": "laravel-iam-client", "path": "https://doc.laravel-iam-client.padosoft.com", "external": true },
+          { "title": "laravel-iam-contracts", "path": "https://doc.laravel-iam-contracts.padosoft.com", "external": true }
+        ]
+      },
+      {
+        "title": "Author",
+        "links": [
+          { "title": "Lorenzo Padovani", "path": "https://github.com/lorenzo-padovani", "external": true },
+          { "title": "Padosoft", "path": "https://github.com/padosoft", "external": true }
+        ]
+      }
+    ]
+  },
+
+  "plugins": {
+    "search": { "enabled": true, "semantic": true, "placeholder": "Search the docs…" },
+    "git": {
+      "repo": "https://github.com/padosoft/laravel-iam-ai",
+      "branch": "main",
+      "editLink": true,
+      "lastUpdated": true,
+      "commitHistory": true,
+      "dateFormat": "relative"
+    },
+    "seo": {
+      "defaultDescription": "Optional AI module for Laravel IAM: advisory-only governance on a sovereign transport. Off by default.",
+      "aiBots": true,
+      "openGraph": {},
+      "twitter": { "cardType": "summary_large_image" }
+    },
+    "sitemap": { "defaultChangefreq": "weekly", "defaultPriority": 0.8 },
+    "mermaid": {},
+    "math": {},
+    "llms": { "fullContext": true },
+    "analytics": { "enabled": false }
+  }
+}
