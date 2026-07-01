@@ -18,8 +18,11 @@ This writes `config/iam-ai.php`. The defaults are **sovereign and off**.
 | Key | Env | Default | Meaning |
 | --- | --- | --- | --- |
 | `enabled` | `IAM_AI_ENABLED` | `false` | Master switch. While `false`, the `DisabledProvider` is used and you get deterministic answers only. |
-| `provider` | `IAM_AI_PROVIDER` | `disabled` | `disabled` \| `regolo` (EU) \| `ollama` (on-prem). Real providers are optional adapters. |
+| `provider` | `IAM_AI_PROVIDER` | `disabled` | `disabled` \| `regolo` (EU, OpenAI-compatible) \| `ollama` (on-prem). Both transports ship with the package. |
 | `model` | `IAM_AI_MODEL` | `null` | Model name passed to the chosen provider. |
+| `base_url` | `IAM_AI_BASE_URL` | `null` | Provider endpoint (e.g. `https://api.regolo.ai/v1` or `http://localhost:11434`). Required to enable a real provider. |
+| `api_key` | `IAM_AI_API_KEY` | `null` | Bearer key — required for `regolo`, optional for `ollama` (gateway). |
+| `timeout` | `IAM_AI_TIMEOUT` | `20` | HTTP timeout (seconds) for the provider call. |
 | `redaction` | — | `true` | The PRE-prompt redaction pipeline. Mandatory; leave it on. |
 | `store_prompts` | — | `false` | Never persist prompts (possible PII/secrets). Hard default — no env override. |
 | `store_outputs` | `IAM_AI_STORE_OUTPUTS` | `false` | Opt-in: store the **sanitized** output in the audit trail. |
@@ -49,24 +52,29 @@ The recommended providers are sovereign: **Regolo** (Italian/EU) or **Ollama** (
 a non-sovereign provider as a default, and pulls in no AI SDK via `require`.
 :::
 
+Both `regolo` and `ollama` transports **ship with the package** — just configure one via env. No extra
+Composer package, no rebinding.
+
 ::: tabs
 == tab "Regolo (EU)" icon:cloud
 ```dotenv
 IAM_AI_ENABLED=true
 IAM_AI_PROVIDER=regolo
+IAM_AI_BASE_URL=https://api.regolo.ai/v1
+IAM_AI_API_KEY=your-regolo-api-key
 IAM_AI_MODEL=your-model
+IAM_AI_TIMEOUT=20
 ```
-Install the adapter:
-```bash
-composer require padosoft/laravel-ai-regolo
-```
+OpenAI-compatible `/chat/completions`, Bearer auth, temperature pinned to 0.
 == tab "Ollama (on-prem)" icon:server
 ```dotenv
 IAM_AI_ENABLED=true
 IAM_AI_PROVIDER=ollama
+IAM_AI_BASE_URL=http://localhost:11434
 IAM_AI_MODEL=llama3.1
+# IAM_AI_API_KEY=...   # only if Ollama is behind an authenticating gateway
 ```
-Point your transport adapter at your local Ollama endpoint.
+Non-streaming `/api/chat` against your own infrastructure — data never leaves the perimeter.
 == tab "Your own" icon:wrench
 ```dotenv
 IAM_AI_ENABLED=true
@@ -76,8 +84,12 @@ IAM_AI_MODEL=your-model
 Implement `AiProvider` and rebind it — see [Write a sovereign provider](/guides/write-a-provider-adapter).
 :::
 
-The adapter rebinds the `Padosoft\Iam\Ai\Contracts\AiProvider` binding. Redaction and the hallucination-guard
-remain active regardless of provider.
+::: callout tip "Fail-safe by construction"
+If a real provider is selected but its transport isn't fully configured (e.g. `regolo` with no `api_key`),
+the binding falls back to `DisabledProvider` — never a misconfigured network call. Redaction and the
+hallucination-guard remain active regardless of provider, and any transport error falls back to the
+deterministic text.
+:::
 
 ## How the provider is resolved
 

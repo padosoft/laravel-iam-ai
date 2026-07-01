@@ -113,16 +113,33 @@ $advisory->toArray();     // includes 'advisory_only' => true
 
 ### 3. Turn on a sovereign provider (opt-in)
 
-In `.env` — never wire OpenAI as a default:
+Two transports ship with the package — **Regolo** (EU, OpenAI-compatible) and **Ollama** (on-prem). Just
+configure one in `.env`; no OpenAI is ever wired.
 
 ```dotenv
+# Regolo (EU sovereign, OpenAI-compatible)
 IAM_AI_ENABLED=true
-IAM_AI_PROVIDER=regolo        # sovereign EU — or 'ollama' for on-prem
+IAM_AI_PROVIDER=regolo
+IAM_AI_BASE_URL=https://api.regolo.ai/v1
+IAM_AI_API_KEY=your-regolo-api-key
 IAM_AI_MODEL=your-model
+IAM_AI_TIMEOUT=20
 ```
 
-Install the matching adapter (e.g. `padosoft/laravel-ai-regolo`); it rebinds the `AiProvider` transport.
-Redaction stays on, the guard stays on, and every call is audited.
+```dotenv
+# …or Ollama (on-prem, your infra)
+IAM_AI_ENABLED=true
+IAM_AI_PROVIDER=ollama
+IAM_AI_BASE_URL=http://localhost:11434
+IAM_AI_MODEL=llama3
+# IAM_AI_API_KEY=...   # only if Ollama sits behind an authenticating gateway
+```
+
+**Fail-safe:** if the transport isn't fully configured (e.g. `regolo` without an API key), the module
+silently stays on `DisabledProvider` — never a misconfigured network call. Redaction stays on, the
+hallucination guard stays on, every call is audited, and any transport error falls back to the
+deterministic text. Need a different backend? Implement `AiProvider` — see
+[Write a provider adapter](https://doc.laravel-iam-ai.padosoft.com/guides/write-a-provider-adapter).
 
 ### 4. The PDP still decides
 
